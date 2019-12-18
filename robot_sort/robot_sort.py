@@ -94,7 +94,7 @@ class SortingRobot:
         """
         return self._light == "ON"
 
-    def repeat(self):
+    def go_to_list_start(self):
         while self.can_move_left():
             self.move_left()
 
@@ -103,16 +103,18 @@ class SortingRobot:
         Sort the robot's list.
         """
         # Fill this out
-        print(f"starting list {self._list}")
         self.set_light_on()
         while self.light_is_on():
             self.set_light_off()
 
             while self.can_move_right():
+                # Move None to the end of the list
                 if self.compare_item() is None:
                     self.swap_item()
                     self.move_right()
                     self.swap_item()
+                    self.go_to_list_start()
+
                 if self.compare_item() == -1:
                     self.set_light_on()
                     self.swap_item()
@@ -120,27 +122,18 @@ class SortingRobot:
                 self.move_right()
 
             if self.light_is_on():
-                self.repeat()
+                self.go_to_list_start()
 
-            else:
+            elif self.compare_item() is None:
                 self.swap_item()
-
-
-            # for i in range(n - 1):
-                # if self._list[i] > self._list[i + 1]:
-                #     self._list[i], self._list[i +
-                #                               1] = self._list[i + 1], self._list[i]
-                #     self.set_light_on()
-
                     
-
 
 if __name__ == "__main__":
     # Test our your implementation from the command line
     # with `python robot_sort.py`
 
-    # l = [15, 41, 58, 49, 26, 4, 28, 8, 61, 60, 65, 21, 78, 14, 35, 90, 54, 5, 0, 87, 82, 96, 43, 92, 62, 97, 69, 94, 99, 93, 76, 47, 2, 88, 51, 40, 95, 6, 23, 81, 30, 19, 25, 91, 18, 68, 71, 9, 66, 1, 45, 33, 3, 72, 16, 85, 27, 59, 64, 39, 32, 24, 38, 84, 44, 80, 11, 73, 42, 20, 10, 29, 22, 98, 17, 48, 52, 67, 53, 74, 77, 37, 63, 31, 7, 75, 36, 89, 70, 34, 79, 83, 13, 57, 86, 12, 56, 50, 55, 46]
-    l = [15, 41, 58, 49, 26]
+    l = [15, 41, 58, 49, 26, 4, 28, 8, 61, 60, 65, 21, 78, 14, 35, 90, 54, 5, 0, 87, 82, 96, 43, 92, 62, 97, 69, 94, 99, 93, 76, 47, 2, 88, 51, 40, 95, 6, 23, 81, 30, 19, 25, 91, 18, 68, 71, 9, 66, 1, 45, 33, 3, 72, 16, 85, 27, 59, 64, 39, 32, 24, 38, 84, 44, 80, 11, 73, 42, 20, 10, 29, 22, 98, 17, 48, 52, 67, 53, 74, 77, 37, 63, 31, 7, 75, 36, 89, 70, 34, 79, 83, 13, 57, 86, 12, 56, 50, 55, 46]
+
     robot = SortingRobot(l)
 
     robot.sort()
@@ -148,9 +141,12 @@ if __name__ == "__main__":
 
 """
 ALGORITHM
-1. Iterate through the list
+1. Invoke a loop
 2. Have robot pick up the first item in the list
-3. Compare the item is currently holding with the next item in the list
-4. If the item is greater than the one robot is holding swap the items
-5. At the end of the list swap the last item with the largest item
+3. Execute an inner loop
+3. Inside the inner oop the list and place the None value at the end of the list
+4. Compare the item the robot is currently holding with the next item in the list
+4. If the item is greater than the one robot is holding swap the items and flag the loop to continue executing
+5. If the flag is still go back to the beginning of the list and repeat the process
+6. Once the inner loop stops running swap the last element (None) with the item the robot is holding
 """
