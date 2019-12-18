@@ -94,21 +94,43 @@ class SortingRobot:
         """
         return self._light == "ON"
 
+    def repeat(self):
+        while self.can_move_left():
+            self.move_left()
+
     def sort(self):
         """
         Sort the robot's list.
         """
         # Fill this out
         print(f"starting list {self._list}")
-        n = len(self._list)
         self.set_light_on()
         while self.light_is_on():
             self.set_light_off()
-            for i in range(n-1):
-                if self._list[i] > self._list[i + 1]:
-                    self._list[i], self._list[i +
-                                              1] = self._list[i + 1], self._list[i]
+
+            while self.can_move_right():
+                if self.compare_item() is None:
+                    self.swap_item()
+                    self.move_right()
+                    self.swap_item()
+                if self.compare_item() == -1:
                     self.set_light_on()
+                    self.swap_item()
+                
+                self.move_right()
+
+            if self.light_is_on():
+                self.repeat()
+
+            else:
+                self.swap_item()
+
+
+            # for i in range(n - 1):
+                # if self._list[i] > self._list[i + 1]:
+                #     self._list[i], self._list[i +
+                #                               1] = self._list[i + 1], self._list[i]
+                #     self.set_light_on()
 
                     
 
